@@ -93,7 +93,7 @@
 <body>
 
     <div class="panel">
-        <h2>1. Vision Model</h2>
+        <h2> Vision Model</h2>
         <input type="text" id="model-url" placeholder="Paste Teachable Machine URL (e.g., https://teachablemachine.withgoogle.com/models/...)">
         <button id="load-model-btn" onclick="initModel()">Load Model & Start Camera</button>
         
@@ -108,13 +108,13 @@
     </div>
 
     <div class="panel">
-        <h2>2. Hardware Connection</h2>
+        <h2> Hardware Connection</h2>
         <div id="serial-status" class="status disconnected">Serial: Disconnected</div>
         <br>
         <button id="connect-btn" onclick="connectSerial()">Connect to Microcontroller</button>
         <button id="disconnect-btn" onclick="disconnectSerial()" disabled>Disconnect</button>
 
-        <h3 style="margin-top: 20px;">3. Command Mapping</h3>
+        <h3 style="margin-top: 20px;"> Command Mapping</h3>
         <p style="font-size: 0.9em; color: #aaa;">Map recognized gestures to specific serial characters (e.g., 'C' to close hand, 'O' to open).</p>
         <div id="mapping-container">
             <i>Load a model to generate mappings.</i>
