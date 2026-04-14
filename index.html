@@ -7,6 +7,52 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
     <style>
+/* --- Floating Example Button Styles --- */
+        .fab-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        .fab-menu {
+            background: var(--panel);
+            border: 1px solid var(--surface);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            width: 180px;
+        }
+        .fab-menu.show { display: flex; }
+        .fab-menu button {
+            background: #21222c;
+            color: var(--text);
+            border: 1px solid var(--surface);
+            width: 100%;
+            text-align: left;
+            margin: 0;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+        .fab-menu button:hover { background: var(--surface); color: var(--accent); }
+        .fab-btn {
+            background: #50fa7b;
+            color: #1e1e2e;
+            border: none;
+            padding: 6px 6px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-family: monospace;
+            font-size: 1.4em;
+        }
         :root {
             --bg: #1e1e2e;
             --panel: #282a36;
@@ -491,6 +537,39 @@
 
 
         }
+function toggleFab() {
+            document.getElementById('fab-menu').classList.toggle('show');
+        }
+
+        function downloadCode(type) {
+            let codeString = "";
+            let fileName = "";
+
+            if (type === 'usb') {
+                fileName = "AI_USB_Serial.ino";
+                codeString = `void setup() {\n  Serial.begin(115200);\n  pinMode(13, OUTPUT);\n}\n\nvoid loop() {\n  if (Serial.available() > 0) {\n    String data = Serial.readStringUntil('\\n');\n    data.trim();\n    if (data == "ON") digitalWrite(13, HIGH);\n    if (data == "OFF") digitalWrite(13, LOW);\n  }\n}`;
+            } else {
+                fileName = "AI_WiFi_ESP32.ino";
+                codeString = `// Requires WebSocketsServer library\n#include <WiFi.h>\n#include <WebSocketsServer.h>\n\nWebSocketsServer webSocket = WebSocketsServer(81);\n\nvoid setup() {\n  Serial.begin(115200);\n  WiFi.softAP("AI_Controller", "12345678");\n  webSocket.begin();\n  webSocket.onEvent([](uint8_t num, WStype_t type, uint8_t * p, size_t l){ \n    if(type == WStype_TEXT) Serial.printf("Get: %s\\n", p);\n  });\n}\n\nvoid loop() { webSocket.loop(); }`;
+            }
+
+            const blob = new Blob([codeString], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+            toggleFab();
+        }
     </script>
+<div class="fab-container">
+        <div id="fab-menu" class="fab-menu">
+            <span style="font-size: 0.8em; color: #aaa; margin-bottom: 5px; padding-left: 5px;">Download Example Code Files</span>
+            <button onclick="downloadCode('usb')">USB / BLE Code</button>
+            <button onclick="downloadCode('wifi')">Wi-Fi (ESP32) Code</button>
+        </div>
+        <button class="fab-btn" onclick="toggleFab()"title="Example Code">&lt;/&gt;</button>
+    </div>
 </body>
 </html>
